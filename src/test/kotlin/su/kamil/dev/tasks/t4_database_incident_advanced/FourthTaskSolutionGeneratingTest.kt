@@ -1,4 +1,4 @@
-package su.kamil.dev.su.kamil.dev.t4_database_incident_advanced
+package su.kamil.dev.su.kamil.dev.tasks.t4_database_incident_advanced
 
 import org.junit.jupiter.api.Test
 import su.kamil.dev.tasks.t3_database_incident.pow

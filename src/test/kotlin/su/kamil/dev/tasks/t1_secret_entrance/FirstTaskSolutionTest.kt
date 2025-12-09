@@ -1,4 +1,4 @@
-package su.kamil.dev.su.kamil.dev.t1_secret_entrance
+package su.kamil.dev.su.kamil.dev.tasks.t1_secret_entrance
 
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test

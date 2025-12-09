@@ -1,4 +1,4 @@
-package su.kamil.dev.su.kamil.dev.t2_secret_entrance
+package su.kamil.dev.su.kamil.dev.tasks.t2_secret_entrance
 
 import org.junit.jupiter.api.Test
 import su.kamil.dev.tasks.t2_secret_entrance.countClicks

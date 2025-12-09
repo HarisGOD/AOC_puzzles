@@ -1,10 +1,8 @@
-package su.kamil.dev.su.kamil.dev.t3_database_incident
+package su.kamil.dev.su.kamil.dev.tasks.t3_database_incident
 
 import org.junit.jupiter.api.Test
 import su.kamil.dev.tasks.t3_database_incident.pow
 import su.kamil.dev.tasks.t3_database_incident.solve
-import kotlin.math.floor
-import kotlin.math.log10
 import kotlin.test.assertEquals
 
 class ThirdTaskSolutionTest {
