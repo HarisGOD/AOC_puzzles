@@ -16,16 +16,16 @@ class ThirdTaskSolutionTest {
         val res = solve(pairs)
         val exp = 1227775554L
 
-        assertEquals(exp,res)
+        assertEquals(exp, res)
 
     }
     @Test
     fun testPow(){
-        assertEquals(1L,10L.pow(0))
-        assertEquals(10L,10L.pow(1))
-        assertEquals(100L,10L.pow(2))
-        assertEquals(1000L,10L.pow(3))
-        assertEquals(10000L,10L.pow(4))
+        assertEquals(1L, 10L.pow(0))
+        assertEquals(10L, 10L.pow(1))
+        assertEquals(100L, 10L.pow(2))
+        assertEquals(1000L, 10L.pow(3))
+        assertEquals(10000L, 10L.pow(4))
 
 
     }
