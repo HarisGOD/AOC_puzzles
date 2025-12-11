@@ -1,4 +1,4 @@
-package su.kamil.dev.tasks.t7_paper_roll_wall
+package su.kamil.dev.tasks.t8_paper_roll_wall_dynamic
 
 import java.io.File
 import java.io.FileReader
@@ -24,12 +24,12 @@ import kotlin.io.println
 data class BinMat(val gridMatrix: List<String>) {
     val vec1 = BooleanArray(3)
     val vec2 = BooleanArray(3).apply {
-        this[1] = isPaperAt(0,0)
-        this[2] = isPaperAt(1,0)
+        this[1] = gridMatrix[0][0] =='@'
+        this[2] = gridMatrix[1][0] =='@'
     }
     val vec3 = BooleanArray(3).apply {
-        this[1] = isPaperAt(0,1)
-        this[2] = isPaperAt(1,1)
+        this[1] = gridMatrix[0][1] =='@'
+        this[2] = gridMatrix[1][1] =='@'
     }
 
     val vecNULL = BooleanArray(3, { false })
@@ -37,8 +37,9 @@ data class BinMat(val gridMatrix: List<String>) {
     val width = gridMatrix.get(0).length
     var posX = 0
     var posY = 0
-    val testingMonitor:List<MutableList<Char>> = gridMatrix.map { it.toMutableList() }
+    val dynamicRepresentation:List<MutableList<Char>> = gridMatrix.map { it.toMutableList() }
     // for all caret moves, we know, that they were not go deeper than limits of grid(maximum go inside border to 1 pos)
+
     fun caretRight() {
         if(posX==width-1) throw Exception("You trying move caret to far(right) form border(${width-1})")
         vec2.copyInto(vec1)
@@ -48,7 +49,7 @@ data class BinMat(val gridMatrix: List<String>) {
 
             vec3[0] = (posY > 0) && isPaperAt(posY - 1, posX)
             vec3[1] = isPaperAt(posY, posX)
-            vec3[2] = (posY < height) && isPaperAt(posY + 1, posX)
+            vec3[2] = (posY < height-1) && isPaperAt(posY + 1, posX)
         } else {
             vecNULL.copyInto(vec3)
         }
@@ -98,64 +99,88 @@ data class BinMat(val gridMatrix: List<String>) {
         var sum = 0
         // go in circle
         // rt mt lt lm | rb bm lb mr
-        if (posY > 0            &&  posX > 0            &&  (gridMatrix[posY - 1][posX - 1] == '@')) sum++
-        if (posY > 0            &&                          (gridMatrix[posY - 1][posX    ] == '@')) sum++
-        if (posY > 0            &&  posX < width - 1    &&  (gridMatrix[posY - 1][posX + 1] == '@')) sum++
-        if (                        posX < width - 1    &&  (gridMatrix[posY    ][posX + 1] == '@')) sum++
+        if (posY > 0            &&  posX > 0            &&  (dynamicRepresentation[posY - 1][posX - 1] == '@')) sum++
+        if (posY > 0            &&                          (dynamicRepresentation[posY - 1][posX    ] == '@')) sum++
+        if (posY > 0            &&  posX < width - 1    &&  (dynamicRepresentation[posY - 1][posX + 1] == '@')) sum++
+        if (                        posX < width - 1    &&  (dynamicRepresentation[posY    ][posX + 1] == '@')) sum++
 
-        if (posY < height - 1   &&  posX < width - 1    &&  (gridMatrix[posY + 1][posX + 1] == '@')) sum++
-        if (posY < height - 1   &&                          (gridMatrix[posY + 1][posX    ] == '@')) sum++
-        if (posY < height - 1   &&  posX > 0            &&  (gridMatrix[posY + 1][posX - 1] == '@')) sum++
-        if (                        posX > 0            &&  (gridMatrix[posY    ][posX - 1] == '@')) sum++
+        if (posY < height - 1   &&  posX < width - 1    &&  (dynamicRepresentation[posY + 1][posX + 1] == '@')) sum++
+        if (posY < height - 1   &&                          (dynamicRepresentation[posY + 1][posX    ] == '@')) sum++
+        if (posY < height - 1   &&  posX > 0            &&  (dynamicRepresentation[posY + 1][posX - 1] == '@')) sum++
+        if (                        posX > 0            &&  (dynamicRepresentation[posY    ][posX - 1] == '@')) sum++
 
         return sum
     }
 
     fun isPaperAt(y: Int, x: Int): Boolean {
-        return gridMatrix[y][x] == '@'
+        return dynamicRepresentation[y][x] == '@'
+    }
+
+    fun removeFrom(y:Int,x:Int){
+        dynamicRepresentation[y][x] = 'x'
+    }
+
+    fun resetPosition(){
+        posX = 0
+        posY = 0
+        vecNULL.copyInto(vec1)
+        vecNULL.copyInto(vec2)
+        vecNULL.copyInto(vec3)
+        vec2[1] = gridMatrix[0][0] =='@'
+        vec2[2] = gridMatrix[1][0] =='@'
+        vec3[1] = gridMatrix[0][1] =='@'
+        vec3[2] = gridMatrix[1][1] =='@'
     }
 }
+
 
 fun solve(lines: List<String>): Int {
     var sum = 0
     val b = BinMat(lines)
 
     var isGoingRight = true
-    for(row in 0..<b.height){
-        for(col in 0..<b.width-1){
-            if(b.isPaperAt(b.posY,b.posX)&&(b.getAmountOfSurroundingPapers() < 4)) {
-                sum += 1
-                b.testingMonitor[b.posY][b.posX] = 'x'
-            }
+    var removedPapers = 999
+    while(removedPapers>0) {
+        removedPapers=0
+        for (row in 0..<b.height) {
+            for (col in 0..<b.width - 1) {
+                if (b.isPaperAt(b.posY, b.posX) && (b.getAmountOfSurroundingPapers() < 4)) {
+                    sum += 1
+                    removedPapers+=1
+                    b.removeFrom(b.posY,b.posX)
+                }
 
-            if (isGoingRight){
-                b.caretRight()
-                if(col==b.width-2)
-                    if(b.isPaperAt(b.posY,b.posX)&&(b.getAmountOfSurroundingPapers() < 4)) {
-                        sum += 1
-                        b.testingMonitor[b.posY][b.posX] = 'x'
-                    }
-            }
-            else{
-                b.caretLeft()
-                if(col==b.width-2)
-                    if(b.isPaperAt(b.posY,b.posX)&&(b.getAmountOfSurroundingPapers() < 4)) {
-                        sum += 1
-                        b.testingMonitor[b.posY][b.posX] = 'x'
-                    }
+                if (isGoingRight) {
+                    b.caretRight()
+                    if (col == b.width - 2)
+                        if (b.isPaperAt(b.posY, b.posX) && (b.getAmountOfSurroundingPapers() < 4)) {
+                            sum += 1
+                            removedPapers+=1
+                            b.removeFrom(b.posY,b.posX)
+                        }
+                } else {
+                    b.caretLeft()
+                    if (col == b.width - 2)
+                        if (b.isPaperAt(b.posY, b.posX) && (b.getAmountOfSurroundingPapers() < 4)) {
+                            sum += 1
+                            removedPapers+=1
+                            b.removeFrom(b.posY,b.posX)
+                        }
 
+                }
             }
+            isGoingRight = (!isGoingRight)
+            b.caretDown()
         }
-        isGoingRight = (!isGoingRight)
-        b.caretDown()
+        println()
+        for (line in b.dynamicRepresentation){
+            for(char in line)
+                print(char)
+            println()
+        }
+        b.resetPosition()
     }
 
-    println()
-    for (line in b.testingMonitor){
-        for(char in line)
-            print(char)
-        println()
-    }
     return sum
 }
 
@@ -171,6 +196,7 @@ fun main() {
             "@.@@@.@@@@\n" +
             ".@@@@@@@@.\n" +
             "@.@.@@@.@.")
+                .split("\n")
 
     val pathToFile = "src/main/kotlin/su/kamil/dev/tasks/t7_paper_roll_wall/input"
     val file = File(pathToFile)
