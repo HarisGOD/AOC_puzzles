@@ -31,7 +31,7 @@ fun findSumFromRange(left: Long,right: Long): Long{
             val mask = 10L.pow(power/2)*10+1
             if (i%mask == 0L) {
                 sum += i
-                println(i)
+//                println(i)
             }
         }
         i++
