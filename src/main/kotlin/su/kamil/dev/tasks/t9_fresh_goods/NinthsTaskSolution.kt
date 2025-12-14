@@ -4,6 +4,9 @@ import su.kamil.dev.tasks.t4_database_incident_advanced.Range
 import java.io.File
 import java.io.FileReader
 
+suspend fun hello(){
+    println("Hello")
+}
 
 class FoodSpoilingDetector(val ranges:List<Range>){
     var currentRangeIndex = 0

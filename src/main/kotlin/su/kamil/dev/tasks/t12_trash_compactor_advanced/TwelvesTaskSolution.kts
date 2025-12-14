@@ -1,0 +1,61 @@
+// no packages 
+
+import java.io.File
+import java.io.FileReader
+
+fun solve(numbers: List<List<Long>>, operations: List<Char>): Long {
+    var total = 0L
+    for (i in 0..<operations.size) {
+        var sum = if (operations[operations.size-1-i] == '+') 0L else 1L
+
+        for (j in 0..<numbers[i].size) {
+            if (operations[operations.size-1-i] == '+') {
+                sum += numbers[i][j]
+            } else {
+                sum *= numbers[i][j]
+            }
+        }
+        total += sum
+    }
+
+    return total
+}
+
+
+fun main() {
+
+    val pathToFile = "../t11_trash_compactor/input"
+    val file = File(pathToFile)
+    val fileReader = FileReader(file)
+    val lines = fileReader.readLines()
+
+    val operations = lines.last()
+        .split(" ")
+        .filter { it.isNotEmpty() }
+        .map { it[0] }
+
+    val numbers = mutableListOf<List<Long>>()
+    val lineSize = lines[0].length
+    var numberSublist = mutableListOf<Long>()
+    for (i in 0..<lineSize) {
+        val index = lineSize - 1 - i
+        val c1 = lines[0][index]
+        val c2 = lines[1][index]
+        val c3 = lines[2][index]
+        val c4 = lines[3][index]
+        val number = "" + c1 + c2 + c3 + c4
+        if ((c1 == c2) && (c3 == c4) && (c3 == c2) && (c4 == ' ')) {
+            numbers.add(numberSublist)
+            numberSublist = mutableListOf<Long>()
+        } else {
+            numberSublist.add(("" + c1 + c2 + c3 + c4).trim().toLong())
+        }
+
+    }
+	numbers.add(numberSublist)	
+	val res = solve(numbers,operations)
+	println(res)
+}
+
+
+main()

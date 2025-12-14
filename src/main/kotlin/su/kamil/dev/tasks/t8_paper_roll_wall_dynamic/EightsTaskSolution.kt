@@ -3,6 +3,7 @@ package su.kamil.dev.tasks.t8_paper_roll_wall_dynamic
 import java.io.File
 import java.io.FileReader
 import kotlin.io.println
+import kotlin.system.measureTimeMillis
 
 
 // we do bin matrix 3x3:
@@ -202,7 +203,10 @@ fun main() {
     val file = File(pathToFile)
     val fileReader = FileReader(file)
     val lines = fileReader.readLines()
-    val res = solve(lines)
-    println(res)
+    val time = measureTimeMillis {
+        val res = solve(lines)
+        println(res)
+    }
 
+    println("time took: ${time} millis")
 }
