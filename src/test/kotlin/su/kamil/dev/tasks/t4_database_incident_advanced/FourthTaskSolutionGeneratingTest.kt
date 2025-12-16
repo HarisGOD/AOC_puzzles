@@ -65,14 +65,9 @@ class FourthTaskSolutionGeneratingTest {
 
     @Test
     fun temp(){
-        val i = 619654619654
-        val t = 100000000000
+        val levels = mutableListOf<Int>(10,20,30,40,50,60,70,80,90,100)
 
-        val power = floor(log10(i.toDouble())).toInt()
-        if (power % 2 == 1) {
-            val mask = 10L.pow(power/2)*10+1
-            println(i%mask)
-        }
+        println(levels[9])
 
 
     }
